@@ -108,6 +108,13 @@ node ('jenkins-slave') {
       }
     }
 
+    stage('sonar') {
+      def scannerHome = tool 'sonar-scanner-maven-install'
+      withSonarQubeEnv('sonar-default-server') {
+        sh "${scannerHome}/bin/sonar-scanner"
+      }
+    }
+
     stage('build') {
       ansiColor('xterm') {
         sh 'npm run prod'

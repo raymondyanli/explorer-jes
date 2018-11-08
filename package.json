@@ -62,9 +62,9 @@
   "scripts": {
     "dev": "webpack-dev-server --content-base WebContent --inline --hot",
     "lint": "eslint ./WebContent/js/ ./tests/",
-    "test": "JUNIT_REPORT_PATH=target/report.xml mocha --compilers js:babel-register tests --recursive --reporter mocha-jenkins-reporter",
+    "test": "cross-env JUNIT_REPORT_PATH=target/report.xml cross-env JENKINS_REPORTER_ENABLE_SONAR=true cross-env JENKINS_REPORTER_TEST_DIR=tests mocha --compilers js:babel-register tests --recursive --reporter mocha-jenkins-reporter",
     "testWatch": "mocha --watch --compilers js:babel-register tests --recursive",
-    "coverage": "JUNIT_REPORT_PATH=target/report.xml nyc --report cobertura --require babel-core/register --all mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
+    "coverage": "cross-env JENKINS_REPORTER_ENABLE_SONAR=true cross-env JENKINS_REPORTER_TEST_DIR=tests nyc --report cobertura --require babel-core/register --all mocha --compilers js:babel-register tests --recursive --colors --reporter mocha-jenkins-reporter",
     "coverageReport": "nyc report --reporter=cobertura",
     "coverageReportHTML": "nyc report --reporter=lcov ",
     "prod": "cross-env NODE_ENV='production' webpack -p",
