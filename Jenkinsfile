@@ -34,7 +34,7 @@ customParameters.push(credentials(
   name: 'NPM_CREDENTIALS_ID',
   description: 'npm auth token',
   credentialType: 'org.jenkinsci.plugins.plaincredentials.impl.StringCredentialsImpl',
-  defaultValue: 'giza-jenkins-basicAuth',
+  defaultValue: 'nexus3-marktest-token',
   required: true
 ))
 customParameters.push(string(
@@ -64,7 +64,7 @@ customParameters.push(string(
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
-  defaultValue: 'gizaArtifactory',
+  defaultValue: 'nexus3-marktest',
   trim: true
 ))
 customParameters.push(credentials(
@@ -138,7 +138,7 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
 
       ansiColor('xterm') {
         // login to private npm registry
-        def npmRegistry = 'https://gizaartifactory.jfrog.io/gizaartifactory/api/npm/npm-release/'
+        def npmRegistry = 'http://35.231.209.177:8081/repository/npm-private/'
         npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
 
         // sh 'npm prune'
@@ -206,20 +206,42 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
 
         echo 'publishing pax file to artifactory...'
         def releaseIdentifier = getReleaseIdentifier()
-        def server = Artifactory.server params.ARTIFACTORY_SERVER
-        def uploadSpec
-        if (allowReleasing) {
-          uploadSpec = readFile "artifactory-upload-spec.release.json.template"
-          uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
-          uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
-        } else {
-          uploadSpec = readFile "artifactory-upload-spec.snapshot.json.template"
-          uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
-          uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
-        }
-        def buildInfo = Artifactory.newBuildInfo()
-        server.upload spec: uploadSpec, buildInfo: buildInfo
-        server.publishBuildInfo buildInfo
+        // def server = Artifactory.server params.ARTIFACTORY_SERVER
+        // def uploadSpec
+        // if (allowReleasing) {
+        //   uploadSpec = readFile "artifactory-upload-spec.release.json.template"
+        //   uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
+        //   uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
+        // } else {
+        //   uploadSpec = readFile "artifactory-upload-spec.snapshot.json.template"
+        //   uploadSpec = uploadSpec.replaceAll(/\{ARTIFACTORY_VERSION\}/, packageVersion)
+        //   uploadSpec = uploadSpec.replaceAll(/\{RELEASE_IDENTIFIER\}/, releaseIdentifier)
+        // }
+        // def buildInfo = Artifactory.newBuildInfo()
+        // server.upload spec: uploadSpec, buildInfo: buildInfo
+        // server.publishBuildInfo buildInfo
+        def artifact = sh(script: "ls -1 ./pax-workspace/*.pax", returnStdout: true).trim()
+        def repository = 'maven-snapshots'
+        nexusPublisher nexusInstanceId: params.ARTIFACTORY_SERVER,
+          nexusRepositoryId: repository,
+          packages: [
+            [
+              $class: 'MavenPackage',
+              mavenAssetList: [
+                [
+                  classifier: '',
+                  extension: '',
+                  filePath: artifact
+                ]
+              ],
+              mavenCoordinate: [
+                artifactId: 'explorer-jes-pax',
+                groupId: 'org.zowe.explorer-jes',
+                packaging: 'pax',
+                version: packageVersion
+              ]
+            ]
+          ]
       }
     }
 
