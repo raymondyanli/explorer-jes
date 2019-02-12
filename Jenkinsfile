@@ -64,7 +64,7 @@ customParameters.push(string(
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
-  defaultValue: 'nexus3-marktest',
+  defaultValue: 'nexus2-marktest',
   trim: true
 ))
 customParameters.push(credentials(
