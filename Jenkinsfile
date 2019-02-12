@@ -138,7 +138,7 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
 
       ansiColor('xterm') {
         // login to private npm registry
-        def npmRegistry = 'http://35.231.209.177:8081/repository/npm-private/'
+        def npmRegistry = 'http://35.231.209.177:8081/repository/npm-group/'
         npmLogin(npmRegistry, params.NPM_CREDENTIALS_ID, params.NPM_USER_EMAIL)
 
         // sh 'npm prune'
