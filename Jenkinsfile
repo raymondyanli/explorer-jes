@@ -221,7 +221,7 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
         // server.upload spec: uploadSpec, buildInfo: buildInfo
         // server.publishBuildInfo buildInfo
         def artifact = sh(script: "ls -1 ./pax-workspace/*.pax", returnStdout: true).trim()
-        def repository = 'maven-snapshots'
+        def repository = 'snapshots'
         echo "====================================================================="
         echo "Nexus server       : ${params.ARTIFACTORY_SERVER}"
         echo "Nexus repository   : ${repository}"
