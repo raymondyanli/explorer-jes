@@ -64,7 +64,7 @@ customParameters.push(string(
 customParameters.push(string(
   name: 'ARTIFACTORY_SERVER',
   description: 'Artifactory server, should be pre-defined in Jenkins configuration',
-  defaultValue: 'nexus2-marktest',
+  defaultValue: 'nexus3-marktest',
   trim: true
 ))
 customParameters.push(credentials(
@@ -221,7 +221,7 @@ node ('ibm-jenkins-slave-nvm-jnlp') {
         // server.upload spec: uploadSpec, buildInfo: buildInfo
         // server.publishBuildInfo buildInfo
         def artifact = sh(script: "ls -1 ./pax-workspace/*.pax", returnStdout: true).trim()
-        def repository = 'snapshots'
+        def repository = 'raw-private'
         echo "====================================================================="
         echo "Nexus server       : ${params.ARTIFACTORY_SERVER}"
         echo "Nexus repository   : ${repository}"
