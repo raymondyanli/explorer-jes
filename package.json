@@ -23,7 +23,7 @@
     "whatwg-fetch": "^2.0.3"
   },
   "peerDependencies": {
-    "explorer-ui-server": "0.1.4"
+    "explorer-ui-server": "0.2.6-pr-16-2-20190515182945"
   },
   "devDependencies": {
     "babel-eslint": "^7.2.3",
